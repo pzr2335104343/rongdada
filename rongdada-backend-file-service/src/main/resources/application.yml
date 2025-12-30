@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: rongdada-backend-file-service
+  # 默认 dev 环境
+  profiles:
+    active: dev
+  # 支持 swagger3
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  # session 配置
+  session:
+    store-type: redis
+    # 30 天过期
+    timeout: 2592000
+  # Redis 配置
+  redis:
+    database: 1
+    host: 116.62.79.19
+    port: 6379
+    timeout: 5000
+    password: redis_kTkjB3
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  # 文件上传
+  servlet:
+    multipart:
+      # 大小限制
+      max-file-size: 10MB
+server:
+  address: 0.0.0.0
+  port: 8107
+  servlet:
+    context-path: /api/file
+    # cookie 30 天过期
+    session:
+      cookie:
+        max-age: 2592000
+        path: /api
+# 对象存储
+cos:
+  client:
+    accessKey: AKIDyoVzQsAUinxBJEuY5PZxJcu295nMhneL
+    secretKey: c1CC3nMm5IMGMOGwSoIg9WmogNtCPTUP
+    region: ap-guangzhou
+    bucket: ai-picture-1333553851
+knife4j:
+  enable: true

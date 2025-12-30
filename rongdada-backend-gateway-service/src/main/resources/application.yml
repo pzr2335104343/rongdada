@@ -1,0 +1,54 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      routes:
+        - id: rongdada-backend-user-service
+          # lb 表示 通过 LoadBalancer 去挑选目标实例
+          uri: lb://rongdada-backend-user-service
+          predicates:
+            - Path=/api/user/**
+        - id: rongdada-backend-app-service
+          uri: lb://rongdada-backend-app-service
+          predicates:
+            - Path=/api/app/**
+        - id: rongdada-backend-file-service
+          uri: lb://rongdada-backend-file-service
+          predicates:
+            - Path=/api/file/**
+        - id: rongdada-backend-question-service
+          uri: lb://rongdada-backend-question-service
+          predicates:
+            - Path=/api/question/**
+        - id: rongdada-backend-scoringresult-service
+          uri: lb://rongdada-backend-scoringresult-service
+          predicates:
+            - Path=/api/scoringResult/**
+        - id: rongdada-backend-useranswer-service
+          uri: lb://rongdada-backend-useranswer-service
+          predicates:
+            - Path=/api/userAnswer/**
+
+  application:
+    name: rongdada-backend-gateway-service
+  main:
+    web-application-type: reactive
+server:
+  port: 8101
+knife4j:
+  gateway:
+    # 是否开启
+    enabled: true
+    # 指定服务发现的模式聚合微服务文档
+    strategy: discover
+    # 服务发现模式的配置
+    discover:
+      # 开启
+      enabled: true
+      # 指定版本号(swagger2|openapi3)
+      version: swagger2
+      # 需要排除的微服务(eg:网关服务)
+      excluded-services:
+        - rongdada-backend-gateway-service
