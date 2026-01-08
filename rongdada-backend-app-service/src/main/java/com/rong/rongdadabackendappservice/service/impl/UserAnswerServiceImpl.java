@@ -1,9 +1,12 @@
-package com.rong.rongdadabackenduseranswerservice.service.impl;
+package com.rong.rongdadabackendappservice.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.rong.rongdadabackendappservice.mapper.UserAnswerMapper;
+import com.rong.rongdadabackendappservice.service.AppService;
+import com.rong.rongdadabackendappservice.service.UserAnswerService;
 import com.rong.rongdadabackendcommon.common.ErrorCode;
 import com.rong.rongdadabackendcommon.constant.CommonConstant;
 import com.rong.rongdadabackendcommon.exception.ThrowUtils;
@@ -15,10 +18,7 @@ import com.rong.rongdadabackendmodel.entity.UserAnswer;
 import com.rong.rongdadabackendmodel.enums.ReviewStatusEnum;
 import com.rong.rongdadabackendmodel.vo.UserAnswerVO;
 import com.rong.rongdadabackendmodel.vo.UserVO;
-import com.rong.rongdadabackendserviceclient.service.AppFeignClient;
 import com.rong.rongdadabackendserviceclient.service.UserFeignClient;
-import com.rong.rongdadabackenduseranswerservice.mapper.UserAnswerMapper;
-import com.rong.rongdadabackenduseranswerservice.service.UserAnswerService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +42,7 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
     private UserFeignClient userFeignClient;
 
     @Resource
-    private AppFeignClient appService;
+    private AppService appService;
     /**
      * 校验数据
      *
@@ -65,7 +65,7 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         // 补充校验规则
         if (appId != null) {
             App app = appService.getById(appId);
-            ThrowUtils.throwIf(app == null, ErrorCode.PARAMS_ERROR, "应用不存在");
+            ThrowUtils.throwIf(app == null, ErrorCode.PARAMS_ERROR, "标题过长");
             ThrowUtils.throwIf(!ReviewStatusEnum.PASS.equals(ReviewStatusEnum.getEnumByValue(app.getReviewStatus())), ErrorCode.NO_AUTH_ERROR, "应用未通过审核");
         }
 

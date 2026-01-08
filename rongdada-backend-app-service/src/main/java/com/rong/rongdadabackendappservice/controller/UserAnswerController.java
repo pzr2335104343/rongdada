@@ -1,8 +1,12 @@
-package com.rong.rongdadabackenduseranswerservice.controller;
+package com.rong.rongdadabackendappservice.controller;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.rong.rongdadabackendappservice.annotation.AuthCheck;
+import com.rong.rongdadabackendappservice.scoring.ScoringStrategyExecutor;
+import com.rong.rongdadabackendappservice.service.AppService;
+import com.rong.rongdadabackendappservice.service.UserAnswerService;
 import com.rong.rongdadabackendcommon.common.BaseResponse;
 import com.rong.rongdadabackendcommon.common.DeleteRequest;
 import com.rong.rongdadabackendcommon.common.ErrorCode;
@@ -18,13 +22,8 @@ import com.rong.rongdadabackendmodel.entity.App;
 import com.rong.rongdadabackendmodel.entity.User;
 import com.rong.rongdadabackendmodel.entity.UserAnswer;
 import com.rong.rongdadabackendmodel.vo.UserAnswerVO;
-import com.rong.rongdadabackendserviceclient.service.AppFeignClient;
 import com.rong.rongdadabackendserviceclient.service.UserFeignClient;
-import com.rong.rongdadabackenduseranswerservice.annotation.AuthCheck;
-import com.rong.rongdadabackenduseranswerservice.scoring.ScoringStrategyExecutor;
-import com.rong.rongdadabackenduseranswerservice.service.UserAnswerService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +36,7 @@ import java.util.List;
  * 用户答案接口 
  */
 @RestController
-@RequestMapping("/")
+@RequestMapping("/userAnswer")
 @Slf4j
 public class UserAnswerController {
 
@@ -48,10 +47,11 @@ public class UserAnswerController {
     private UserFeignClient userFeignClient;
 
     @Resource
-    private AppFeignClient appFeignClient;
+    private AppService appService;
 
     @Resource
     private ScoringStrategyExecutor scoringStrategyExecutor;
+
 
     // region 增删改查
 
@@ -85,7 +85,7 @@ public class UserAnswerController {
         // 返回新写入的数据 id
         long newUserAnswerId = userAnswer.getId();
         Long appId = userAnswerAddRequest.getAppId();
-        App app = appFeignClient.getById(appId);
+        App app = appService.getById(appId);
         // 调用评分模块
         try {
             UserAnswer userAnswerWithResult = scoringStrategyExecutor.doScore(choices, app);
